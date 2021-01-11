@@ -15,7 +15,7 @@ class Mail extends \PleskX\Api\Operator
      *
      * @return Struct\Info
      */
-    public function create($name, $siteId, $mailbox = false, $password = '')
+    public function create($name, $siteId, $mailbox = false, $password = '', $forward_address = '')
     {
         $packet = $this->_client->getPacket();
         $info = $packet->addChild($this->_wrapperTag)->addChild('create');
@@ -29,6 +29,11 @@ class Mail extends \PleskX\Api\Operator
         }
         if (!empty($password)) {
             $mailname->addChild('password')->addChild('value', $password);
+        }
+        if (!empty($forward_address)) {
+            $forwarding = $mailname->addChild('forwarding');
+            $forwarding->addChild('enabled', 'true');
+            $forwarding->addChild('address', $forward_address);
         }
 
         $response = $this->_client->request($packet);
